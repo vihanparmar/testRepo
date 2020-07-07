@@ -1,0 +1,42 @@
+
+
+plugins {
+    id 'java'
+    id "net.ltgt.errorprone" version "0.6" apply true
+}
+
+repositories {
+    // to get the google-java-format jar and dependencies
+    jcenter()
+}
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+targetCompatibility = "1.8"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    annotationProcessor "com.uber.piranha:piranha:0.0.3"
+    errorprone "com.google.errorprone:error_prone_core:2.4.0"
+    errorproneJavac "com.google.errorprone:javac:9+181-r4173-1"
+}
+
+import net.ltgt.gradle.errorprone.CheckSeverity
+
+tasks.withType(JavaCompile) {
+    options.errorprone {
+        check("Piranha", CheckSeverity.WARN)
+    }
+    options.errorprone.errorproneArgs.add("-XepPatchChecks:Piranha")
+    options.errorprone.errorproneArgs.add("-XepPatchLocation:IN_PLACE")
+    // The lines below should be replaced by code that loads the specific flag to patch
+    // and final treatment condition.
+    options.errorprone.errorproneArgs.add("-XepOpt:Piranha:FlagName=SAMPLE_STALE_FLAG")
+    options.errorprone.errorproneArgs.add("-XepOpt:Piranha:IsTreated=true")
+    options.errorprone.errorproneArgs.add("-XepOpt:Piranha:Config=config/properties.json")
+}
